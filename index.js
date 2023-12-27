@@ -243,6 +243,34 @@ app.use('/allemp', AllEmployee);
 //   }
 // });
 //    For build
+
+export const handler = async (event, context) => {
+  try {
+    // You can handle different types of events here
+    const eventType = event['httpMethod']; // Assuming it's an HTTP event
+
+    if (eventType === 'POST') {
+      // Handle POST event
+      const requestBody = JSON.parse(event['body']);
+      // ... process the request body
+    } else if (eventType === 'GET') {
+      // Handle GET event
+      // ... process the query parameters
+    }
+
+    // You can return a response based on the event handling
+    return {
+      statusCode: 200,
+      body: JSON.stringify({ message: 'Lambda function executed successfully' })
+    };
+  } catch (error) {
+    console.error('Error:', error);
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ message: 'Internal server error' })
+    };
+  }
+};
 app.use(express.static(path.join(__dirname, 'client/build')))
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, '/client/build', 'index.html'));
