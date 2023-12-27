@@ -1,3 +1,5 @@
+// ErrorReducer.js
+
 import { GET_ERRORS } from "actions/types";
 
 const initialState = {};
@@ -11,6 +13,9 @@ export function errorReducer(state = initialState, action) {
       return state;
   }
 }
+
+export default errorReducer; // Add the default export statement
+
 // import { GET_ERRORS } from "actions/types";
 
 // const initialState = {};
