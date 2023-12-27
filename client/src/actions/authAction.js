@@ -6,7 +6,7 @@ import axios from 'axios';
 
 
 export const registerUser = (userData) => dispatch =>{
-    axios.post('user/register',userData)
+    axios.post('http://localhost:5000/api/user/register',userData)
     .then(res=> window.location = '/authentication/sign-in')
     .catch(err=>dispatch(
         {
