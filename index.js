@@ -58,7 +58,12 @@ router.use('/create', Task);
 router.use('/allemp', AllEmployee);
 
 // Mount the router at the base URL
-const baseURL = 'https://d4x7gfwwblv6rqtceqlva5zjlq0mkbqd.lambda-url.us-east-1.on.aws';
+// let baseURL = process.env.BACKEND_URL;
+// if(process.env.NODE_ENV =="production"){
+//   baseURL =`${req.protocol}://${req.get(`host`)}`
+// }
+const baseURL = `${req.protocol}://${req.get(`host`)}`
+// const baseURL = 'https://d4x7gfwwblv6rqtceqlva5zjlq0mkbqd.lambda-url.us-east-1.on.aws';
 app.use(baseURL, router);
 
 export const handler = async (event, context) => {
