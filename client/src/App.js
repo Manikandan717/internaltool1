@@ -35,10 +35,7 @@ import AdminProjects from "layouts/adminProjects"
 import AllEmployee from "layouts/All-Employees";
 import ProjectEdit from "layouts/ProjectEditAdmin"
 import 'layouts/Attendance/calendar.css';
-import Amplify from 'aws-amplify';
-import awsconfig from './aws-exports';
 
-Amplify.configure(awsconfig);
 
 function App() {
   const [controller] = useMaterialUIController();
