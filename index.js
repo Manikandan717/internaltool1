@@ -62,8 +62,9 @@ router.use('/allemp', AllEmployee);
 // if(process.env.NODE_ENV =="production"){
 //   baseURL =`${req.protocol}://${req.get(`host`)}`
 // }
-const baseURL = `${req.protocol}://${req.get(`host`)}`
+// const baseURL = `${req.protocol}://${req.get(`host`)}`
 // const baseURL = 'https://d4x7gfwwblv6rqtceqlva5zjlq0mkbqd.lambda-url.us-east-1.on.aws';
+const baseURL = 'http://localhost:5000/';
 app.use(baseURL, router);
 
 export const handler = async (event, context) => {
