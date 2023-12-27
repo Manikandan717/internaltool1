@@ -5,9 +5,14 @@ import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
 import passport from 'passport';
 import path from 'path';
-import { fileURLToPath } from 'url';
+// import { fileURLToPath } from 'url';
 import bodyParser from 'body-parser';
 import moment from 'moment';
+import { fileURLToPath } from 'url';
+import { dirname } from 'path';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 // Import routes
 import User from './routes/user.js';
