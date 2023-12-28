@@ -5,9 +5,7 @@ import dotenv from 'dotenv';
 import cookieParser from 'cookie-parser';
 import passport from 'passport';
 import path from 'path';
-// import { fileURLToPath } from 'url';
 import bodyParser from 'body-parser';
-import moment from 'moment';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 
@@ -28,14 +26,15 @@ const port = process.env.PORT || 5000;
 dotenv.config();
 
 // MongoDB connection
-const URI = process.env.ATLAS_URI;
-mongoose.connect(URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-}, (err) => {
-  if (err) throw err;
+try {
+  await mongoose.connect(process.env.ATLAS_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true,
+  });
   console.log('Connected to MongoDB Atlas !!!');
-});
+} catch (err) {
+  console.error('Error connecting to MongoDB:', err);
+}
 
 // Define a router for your routes
 const router = express.Router();
@@ -57,14 +56,14 @@ router.use('/team', Team);
 router.use('/create', Task);
 router.use('/allemp', AllEmployee);
 
+// const baseURL = `${req.protocol}://${req.get(`host`)}`
 // Mount the router at the base URL
 // let baseURL = process.env.BACKEND_URL;
 // if(process.env.NODE_ENV =="production"){
 //   baseURL =`${req.protocol}://${req.get(`host`)}`
 // }
-// const baseURL = `${req.protocol}://${req.get(`host`)}`
+const baseURL = `${req.protocol}://${req.get(`host`)}`
 // const baseURL = 'https://d4x7gfwwblv6rqtceqlva5zjlq0mkbqd.lambda-url.us-east-1.on.aws';
-const baseURL = 'http://localhost:5000/';
 app.use(baseURL, router);
 
 export const handler = async (event, context) => {
@@ -74,7 +73,8 @@ export const handler = async (event, context) => {
 
     if (eventType === 'POST') {
       // Handle POST event
-      const requestBody = JSON.parse(event['body']);
+      // const requestBody = JSON.parse(event['body']);
+      const requestBody = event['body'] ? JSON.parse(event['body']) : {};
       // ... process the request body
     } else if (eventType === 'GET') {
       // Handle GET event
@@ -84,14 +84,17 @@ export const handler = async (event, context) => {
     // You can return a response based on the event handling
     return {
       statusCode: 200,
-      body: JSON.stringify({ message: 'Lambda function executed successfully' })
+      body: JSON.stringify({ message: 'Lambda function executed successfully' }),
     };
   } catch (error) {
     console.error('Error:', error);
     return {
       statusCode: 500,
-      body: JSON.stringify({ message: 'Internal server error' })
+      body: JSON.stringify({ message: 'Internal server error' }),
     };
+  } finally {
+    // Close the MongoDB connection when the function execution is finished
+    mongoose.connection.close();
   }
 };
 
