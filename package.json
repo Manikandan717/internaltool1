@@ -10,7 +10,8 @@
   "scripts": {
     "start": "node index.js",
     "start:dev": "nodemon index.js",
-    "heroku-postbuild": "cd client && npm install && npm run build"
+    "start": "forever index.js",
+    "postbuild": "cd client && npm install && npm run build"
   },
   "engines": {
     "node": "16.13.2",
