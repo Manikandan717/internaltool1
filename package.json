@@ -9,8 +9,8 @@
   "type": "module",
   "scripts": {
     "start": "node index.js",
-    "start:dev": "nodemon index.js",
     "start": "forever index.js",
+    "start:dev": "nodemon index.js",  
     "postbuild": "cd client && npm install && npm run build"
   },
   "engines": {
