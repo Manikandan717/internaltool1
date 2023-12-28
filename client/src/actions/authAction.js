@@ -84,7 +84,7 @@ export const registerUser = (userData) => dispatch =>{
  
 export const loginUser = userData => dispatch => {
     axios
-    .post('user/login', userData)
+    .post('/api/user/login', userData)
     .then(res=>{
          // Save to localStorage
  
