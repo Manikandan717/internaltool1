@@ -28,6 +28,7 @@ import User from "./models/user.model.js";
 import moment from "moment";
 import express from "express";
 
+
 const router = express.Router();
 const app = express();
 // const express = require("express");
@@ -81,25 +82,8 @@ import AllEmployee from "./routes/allEmployees.js";
 
 // To run on AWS Lambda, listen on the Lambda handler instead of a port
 // Export the handler for AWS Lambda
-export const handler = async (event, context) => {
-  try {
-    await app.listen(process.env.PORT);
-    return {
-      statusCode: 200,
-      body: JSON.stringify({
-        message: "Server running on Lambda",
-      }),
-    };
-  } catch (error) {
-    console.error(error);
-    return {
-      statusCode: 500,
-      body: JSON.stringify({
-        message: "Internal server error",
-      }),
-    };
-  }
-};
+
+ 
 const determineRoleFromDesignation = (designation) => {
   // Your logic to determine the role based on the designation
   // For example, if designation is "DEV", return "admin"
@@ -117,7 +101,8 @@ const determineRoleFromDesignation = (designation) => {
     return "analyst";
   }
 };
-
+export const handler = async (event, context) => {
+  try {
 app.post("/register", async (req, res) => {
   try {
     const { errors, isValid } = registerValidate(req.body);
@@ -371,7 +356,23 @@ app.get("/test", (req, res) => {
   res.send({ message: "Hello World" })
 });
 
-
+await app.listen(process.env.PORT);
+return {
+  statusCode: 200,
+  body: JSON.stringify({
+    message: "Server running on Lambda",
+  }),
+};
+} catch (error) {
+console.error(error);
+return {
+  statusCode: 500,
+  body: JSON.stringify({
+    message: "Internal server error",
+  }),
+};
+}
+};
 
 //    For build
 app.use(express.static(path.join(__dirname, "client/build")));

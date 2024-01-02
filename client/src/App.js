@@ -40,6 +40,7 @@ import AllEmployee from "layouts/All-Employees";
 import ProjectEdit from "layouts/ProjectEditAdmin"
 import 'layouts/Attendance/calendar.css';
 import { from } from "stylis";
+import axios from 'axios';
 
 function App() {
   const [controller] = useMaterialUIController();
@@ -56,30 +57,51 @@ function App() {
   const isLoggedIn = useSelector((state) => state.auth.isAuthenticated);
   const role = useSelector(state=>state.auth.user.role);
   // console.log(role);
-  useEffect(() => {
-    if (localStorage.jwtToken) {
-      // Set auth token header auth
-      const token = localStorage.jwtToken;
-      setAuthToken(token);
-      // Decode token and get user info and exp
-      const decoded = jwt_decode(token);
-      // Set user and isAuthenticated
-      store.dispatch(setCurrentUser(decoded));
-      // Check for expired token
-      const currentTime = Date.now() / 1000; // to get in milliseconds
-      if (decoded.exp < currentTime) {
-        // Logout user
-        store.dispatch(logoutUser());
+  // useEffect(() => {
+  //   const refreshToken = async () => {
+  //     try {
+  //       const response = await axios.get("/refresh", {
+  //         withCredentials: true,
+  //       });
+  //       localStorage.setItem("jwtToken", response.data.accessToken);
+  //       setAuthToken(response.data.accessToken);
+  //       const decoded = jwt_decode(response.data.accessToken);
+  //       store.dispatch(setCurrentUser(decoded));
+  //     } catch (err) {
+  //       if (err.response.status === 401) {
+  //         store.dispatch(logoutUser());
+  //         window.location.href = "/authentication/sign-in";
+  //       }
+  //     }
+  //   };
 
-        // Redirect to login
-        // window.location.href = "/sign-in";
-        window.location.href = "/authentication/sign-in"
-      }
-    }
-  }, []);
+  //   const token = localStorage.jwtToken;
 
-  const getRoutes = (allRoutes) =>
-    allRoutes.map((route) => {
+  //   if (!token) {
+  //     window.location.href = "/authentication/sign-in";
+  //     return;
+  //   }
+
+  //   setInterval(refreshToken, 3600000); // refresh token every hour
+
+  //   try {
+  //     setAuthToken(token);
+  //     const decoded = jwt_decode(token);
+  //     store.dispatch(setCurrentUser(decoded));
+
+  //     const currentTime = Date.now() /  3600000;
+  //     if (decoded.exp < currentTime) {
+  //       refreshToken();
+  //     }
+  //   } catch (err) {
+  //     store.dispatch(logoutUser());
+  //     window.location.href = "/authentication/sign-in";
+  //   }
+  // }, []);
+
+
+const getRoutes = (allRoutes) => {
+    return allRoutes.map((route) => {
       if (route.collapse) {
         return getRoutes(route.collapse);
       }
@@ -89,13 +111,19 @@ function App() {
             key={route.route}
             exact
             path={route.route}
-            element={<Protected isValid={(isLoggedIn&&role==='admin')}>{route.component}</Protected>}
+            element={
+              <Protected isValid={isLoggedIn && role === "admin"}>
+                {route.component}
+              </Protected>
+            }
           />
         );
       }
 
       return null;
     });
+  };
+
 
   return (
     <ThemeProvider theme={darkMode ? themeDark : theme}>
