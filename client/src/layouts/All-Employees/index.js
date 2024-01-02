@@ -135,7 +135,7 @@ useEffect(() => {
   // Fetch initial data from MongoDB
   const fetchDataFromMongoDB = async () => {
     try {
-      const response = await fetch('/allemp/fetchData');
+      const response = await fetch('https://pblcs5okhkahpnmrbcmzwdpove0qepho.lambda-url.us-east-1.on.aws/fetchData');
       const fetchData = await response.json();
   
       // Filter out "__v" field from columns
@@ -217,7 +217,7 @@ useEffect(() => {
           setData(formattedData);
 
           // Save the data to MongoDB
-          const response = await fetch('/allemp/uploadData', {
+          const response = await fetch('https://pblcs5okhkahpnmrbcmzwdpove0qepho.lambda-url.us-east-1.on.aws/uploadData', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -229,7 +229,7 @@ useEffect(() => {
             setSnackbarMessage('Data saved to MongoDB');
 
             // Fetch the data from MongoDB
-            const fetchDataResponse = await fetch('http://localhost:5000/api/fetchData');
+            const fetchDataResponse = await fetch('https://pblcs5okhkahpnmrbcmzwdpove0qepho.lambda-url.us-east-1.on.aws/fetchData');
             const fetchData = await fetchDataResponse.json();
 
             setColumns(fetchData.columns.map((col) => ({ field: col, headerName: col, width: 150 })));
@@ -320,7 +320,7 @@ useEffect(() => {
       }
   
       // Fetch the updated data from MongoDB
-      const fetchDataResponse = await fetch('/allemp/fetchData');
+      const fetchDataResponse = await fetch('https://pblcs5okhkahpnmrbcmzwdpove0qepho.lambda-url.us-east-1.on.aws/fetchData');
       const fetchData = await fetchDataResponse.json();
   
       setColumns(fetchData.columns.map((col) => ({ field: col, headerName: col, width: 150 })));
@@ -343,15 +343,15 @@ useEffect(() => {
   // ...
   
   const handleAddEmployee = async () => {
-    await handleApiRequest('/allemp/addEmployee', 'POST', newEmployeeData);
+    await handleApiRequest('https://pblcs5okhkahpnmrbcmzwdpove0qepho.lambda-url.us-east-1.on.aws/addEmployee', 'POST', newEmployeeData);
   };
   
   const handleDeleteEmployee = async (id) => {
-    await handleApiRequest(`/allemp/deleteEmployee/${id}`, 'DELETE');
+    await handleApiRequest(`https://pblcs5okhkahpnmrbcmzwdpove0qepho.lambda-url.us-east-1.on.aws/deleteEmployee/${id}`, 'DELETE');
   };
   
   const handleUpdateEmployee = async () => {
-    await handleApiRequest(`/allemp/updateEmployee/${selectedEmployeeId}`, 'PUT', newEmployeeData);
+    await handleApiRequest(`https://pblcs5okhkahpnmrbcmzwdpove0qepho.lambda-url.us-east-1.on.aws/updateEmployee/${selectedEmployeeId}`, 'PUT', newEmployeeData);
   };
   
 
