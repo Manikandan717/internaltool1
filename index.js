@@ -23,8 +23,8 @@ import registerValidate from "./validation/register.js";
 import LastLogin from "./models/LastLogin.js";
 // import User from './models/user.model.js'
 import Employee from "./models/excelUpload.js";
-import User from "./models/user.model.js"; // Adjust the path accordingly
-import serverless from "serverless-http";
+import User from "./models/user.model.js"; 
+// import serverless from "serverless-http";
 import moment from "moment";
 import express from "express";
 
@@ -52,6 +52,7 @@ mongoose.connect(
     console.log("Connected to MongoDB Atlas !!!");
   }
 );
+mongoose.set('strictQuery', false);
 
 app.use(cors());
 app.use(express.json({ limit: "5000mb" })); // adjust the limit as needed
@@ -79,16 +80,26 @@ import AllEmployee from "./routes/allEmployees.js";
 // app.use("/allemp", AllEmployee);
 
 // To run on AWS Lambda, listen on the Lambda handler instead of a port
-// export const handler = async (event, context) => {
-//   await app.listen(process.env.PORT);
-//   return {
-//     statusCode: 200,
-//     body: JSON.stringify({
-//       message: "Server running on Lambda",
-//     }),
-//   };
-// };
-
+// Export the handler for AWS Lambda
+export const handler = async (event, context) => {
+  try {
+    await app.listen(process.env.PORT);
+    return {
+      statusCode: 200,
+      body: JSON.stringify({
+        message: "Server running on Lambda",
+      }),
+    };
+  } catch (error) {
+    console.error(error);
+    return {
+      statusCode: 500,
+      body: JSON.stringify({
+        message: "Internal server error",
+      }),
+    };
+  }
+};
 const determineRoleFromDesignation = (designation) => {
   // Your logic to determine the role based on the designation
   // For example, if designation is "DEV", return "admin"
@@ -378,4 +389,4 @@ app.listen(port, () => {
 });
 
 // module.exports.handler = serverless(app);
-export const handler = serverless(app);
+// export const handler = serverless(app);
