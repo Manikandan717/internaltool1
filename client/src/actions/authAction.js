@@ -8,7 +8,7 @@ import axios from 'axios';
 // Register user
 export const registerUser = (userData) => (dispatch) => {
   axios
-    .post('https://pblcs5okhkahpnmrbcmzwdpove0qepho.lambda-url.us-east-1.on.aws/register', userData)
+    .post('/user/register', userData)
     .then((res) => (window.location = '/authentication/sign-in'))
     .catch((err) =>
       dispatch({
@@ -21,7 +21,7 @@ export const registerUser = (userData) => (dispatch) => {
 // Login user
 export const loginUser = (userData) => (dispatch) => {
   axios
-    .post('https://pblcs5okhkahpnmrbcmzwdpove0qepho.lambda-url.us-east-1.on.aws/user/login', userData)
+    .post('/user/login', userData)
     .then((res) => {
       // Save to localStorage
       const { token } = res.data;

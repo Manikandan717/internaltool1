@@ -24,7 +24,7 @@ import LastLogin from "./models/LastLogin.js";
 // import User from './models/user.model.js'
 import Employee from "./models/excelUpload.js";
 import User from "./models/user.model.js"; 
-// import serverless from "serverless-http";
+import serverless from "serverless-http";
 import moment from "moment";
 import express from "express";
 
@@ -85,10 +85,6 @@ import AllEmployee from "./routes/allEmployees.js";
 
  
 const determineRoleFromDesignation = (designation) => {
-  // Your logic to determine the role based on the designation
-  // For example, if designation is "DEV", return "admin"
-  // If designation is "SUPERADMIN", return "superadmin"
-  // Otherwise, return "analyst"
 
   const adminDesignations = ["PROJECT MANAGER"];
   const superAdminDesignation = "SUPERADMIN";
@@ -101,8 +97,8 @@ const determineRoleFromDesignation = (designation) => {
     return "analyst";
   }
 };
-export const handler = async (event, context) => {
-  try {
+// export const handler = async (event, context) => {
+//   try {
 app.post("/register", async (req, res) => {
   try {
     const { errors, isValid } = registerValidate(req.body);
@@ -363,22 +359,13 @@ return {
     message: "Server running on Lambda",
   }),
 };
-} catch (error) {
-console.error(error);
-return {
-  statusCode: 500,
-  body: JSON.stringify({
-    message: "Internal server error",
-  }),
-};
-}
-};
+
 
 //    For build
-app.use(express.static(path.join(__dirname, "client/build")));
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "/client/build", "index.html"));
-});
+// app.use(express.static(path.join(__dirname, "client/build")));
+// app.get("*", (req, res) => {
+//   res.sendFile(path.join(__dirname, "/client/build", "index.html"));
+// });
 // app.use(express.static(path.join(__dirname, 'public')));
 
 // app.get('*', (req, res) => {
@@ -390,4 +377,4 @@ app.listen(port, () => {
 });
 
 // module.exports.handler = serverless(app);
-// export const handler = serverless(app);
+export const handler = serverless(app);

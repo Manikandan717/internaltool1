@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import React, { useState, useEffect } from 'react';
 import { Routes, Route, Navigate } from "react-router-dom";
 import { ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -56,6 +56,11 @@ function App() {
   } = controller;
   const isLoggedIn = useSelector((state) => state.auth.isAuthenticated);
   const role = useSelector(state=>state.auth.user.role);
+
+
+
+
+
   // console.log(role);
   // useEffect(() => {
   //   const refreshToken = async () => {
@@ -99,6 +104,23 @@ function App() {
   //   }
   // }, []);
 
+  const [tasks, setTasks] = useState([]);
+  const fetchData = async () => {
+    try {
+      const response = await axios.get('https://pblcs5okhkahpnmrbcmzwdpove0qepho.lambda-url.us-east-1.on.aws', {
+        withCredentials: true,
+      });
+      setTasks(response.data.data);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+  
+
+    // Call the fetchData function
+  useEffect(() => {
+    fetchData();
+  }, []);
 
 const getRoutes = (allRoutes) => {
     return allRoutes.map((route) => {
