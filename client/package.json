@@ -2,7 +2,7 @@
   "name": "objectways_dashboard",
   "version": "1.0.1",
   "private": true,
-  "proxy": "https://cmulajgi5acaag2rn4th6b6wky0ivfjc.lambda-url.us-east-1.on.aws/",
+  "proxy": "https://pblcs5okhkahpnmrbcmzwdpove0qepho.lambda-url.us-east-1.on.aws/",
   "dependencies": {
     "@emotion/cache": "11.7.1",
     "@emotion/react": "^11.11.3",
