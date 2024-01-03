@@ -31,15 +31,12 @@ import MDButton from "components/MDButton";
 const excelRowSchema = {
   emp_id: '',
   emp_name: '',
-  doj: '',
-  gender: '',
-  dob: '',
   email_id: '',
   // status: '',
   // confirmation_date: Date,
   // age_range: '',
   // manager_id: '',
-  manager_name: '',
+  report_to: '',
   // phone_no: '',
   // blood_group: '',
   // employment_status: '',
@@ -59,6 +56,7 @@ const excelRowSchema = {
 };
 
 function Employees() {
+  const apiUrl = process.env.REACT_APP_API_URL;
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
@@ -66,19 +64,15 @@ function Employees() {
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [isViewDialogOpen, setIsViewDialogOpen] = useState(false);
   const [selectedColumns, setSelectedColumns] = useState([]);
-
   const [newEmployeeData, setNewEmployeeData] = useState({
     emp_id: '',
     emp_name: '',
-    doj: '',
-    gender: '',
-    dob: '',
     email_id: '',
     // status: '',
     // confirmation_date: Date,
     // age_range: '',
     // manager_id: '',
-    manager_name: '',
+    report_to: '',
     // phone_no: '',
     // blood_group: '',
     // employment_status: '',
@@ -135,7 +129,7 @@ useEffect(() => {
   // Fetch initial data from MongoDB
   const fetchDataFromMongoDB = async () => {
     try {
-      const response = await fetch('https://pblcs5okhkahpnmrbcmzwdpove0qepho.lambda-url.us-east-1.on.aws/fetchData');
+      const response = await fetch(`${apiUrl}/fetchData`);
       const fetchData = await response.json();
   
       // Filter out "__v" field from columns
@@ -217,7 +211,7 @@ useEffect(() => {
           setData(formattedData);
 
           // Save the data to MongoDB
-          const response = await fetch('https://pblcs5okhkahpnmrbcmzwdpove0qepho.lambda-url.us-east-1.on.aws/uploadData', {
+          const response = await fetch(`${apiUrl}/uploadData`, {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -229,7 +223,7 @@ useEffect(() => {
             setSnackbarMessage('Data saved to MongoDB');
 
             // Fetch the data from MongoDB
-            const fetchDataResponse = await fetch('https://pblcs5okhkahpnmrbcmzwdpove0qepho.lambda-url.us-east-1.on.aws/api/fetchData');
+            const fetchDataResponse = await fetch(`${apiUrl}/fetchData`);
             const fetchData = await fetchDataResponse.json();
 
             setColumns(fetchData.columns.map((col) => ({ field: col, headerName: col, width: 150 })));
@@ -267,15 +261,12 @@ useEffect(() => {
     setNewEmployeeData({
       emp_id: '',
       emp_name: '',
-      doj: '',
-      gender: '',
-      dob: '',
       email_id: '',
       // status: '',
       // confirmation_date: Date,
       // age_range: '',
       // manager_id: '',
-      manager_name: '',
+      report_to: '',
       // phone_no: '',
       // blood_group: '',
       // employment_status: '',
@@ -320,7 +311,7 @@ useEffect(() => {
       }
   
       // Fetch the updated data from MongoDB
-      const fetchDataResponse = await fetch('https://pblcs5okhkahpnmrbcmzwdpove0qepho.lambda-url.us-east-1.on.aws/fetchData');
+      const fetchDataResponse = await fetch(`${apiUrl}/fetchData`);
       const fetchData = await fetchDataResponse.json();
   
       setColumns(fetchData.columns.map((col) => ({ field: col, headerName: col, width: 150 })));
@@ -343,15 +334,15 @@ useEffect(() => {
   // ...
   
   const handleAddEmployee = async () => {
-    await handleApiRequest('https://pblcs5okhkahpnmrbcmzwdpove0qepho.lambda-url.us-east-1.on.aws/addEmployee', 'POST', newEmployeeData);
+    await handleApiRequest(`${apiUrl}/addEmployee`, 'POST', newEmployeeData);
   };
   
   const handleDeleteEmployee = async (id) => {
-    await handleApiRequest(`https://pblcs5okhkahpnmrbcmzwdpove0qepho.lambda-url.us-east-1.on.aws/deleteEmployee/${id}`, 'DELETE');
+    await handleApiRequest(`${apiUrl}/deleteEmployee/${id}`, 'DELETE');
   };
   
   const handleUpdateEmployee = async () => {
-    await handleApiRequest(`https://pblcs5okhkahpnmrbcmzwdpove0qepho.lambda-url.us-east-1.on.aws/updateEmployee/${selectedEmployeeId}`, 'PUT', newEmployeeData);
+    await handleApiRequest(`${apiUrl}/updateEmployee/${selectedEmployeeId}`, 'PUT', newEmployeeData);
   };
   
 
@@ -503,7 +494,7 @@ useEffect(() => {
                 minWidth: "120px",
                 gap: "10px"
               }}>
-            <TextField
+            {/* <TextField
               label="Doj" 
               value={newEmployeeData.doj}
               type='text'
@@ -512,14 +503,14 @@ useEffect(() => {
               }
               fullWidth
               margin="normal"
-            />
-            <TextField
+            /> */}
+            {/* <TextField
               label="Gender"
               value={newEmployeeData.gender}
               onChange={(e) => setNewEmployeeData({ ...newEmployeeData, gender: e.target.value })}
               fullWidth
               margin="normal"
-            />
+            /> */}
              </div>
              <div        style={{
                 display: "flex",
@@ -531,14 +522,14 @@ useEffect(() => {
                 minWidth: "120px",
                 gap: "10px"
               }}>
-            <TextField
+            {/* <TextField
               label="Dob"
               type='text'
               value={newEmployeeData.dob}
               onChange={(e) => setNewEmployeeData({ ...newEmployeeData, dob: e.target.value })}
               fullWidth
               margin="normal"
-            />
+            /> */}
             <TextField
               label="Email Id"
               type='email'
@@ -613,8 +604,8 @@ useEffect(() => {
               }}>
             <TextField
               label="Manager Name"
-              value={newEmployeeData.manager_name}
-              onChange={(e) => setNewEmployeeData({ ...newEmployeeData, manager_name: e.target.value })}
+              value={newEmployeeData.report_to}
+              onChange={(e) => setNewEmployeeData({ ...newEmployeeData, report_to: e.target.value })}
               fullWidth
               margin="normal"
             />

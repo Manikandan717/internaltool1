@@ -28,6 +28,85 @@ router.route('/').get((req,res)=>{
 //     .catch((err)=>res.status(400).json('Error:'+err))
 // })
 
+// API to fetch project names
+// router.route('/api/projectNames').get(async (req, res) => {
+//   try {
+//     const projectNames = await Analyst.distinct('projectName');
+//     res.json(projectNames);
+//   } catch (error) {
+//     console.error('Error fetching project names:', error);
+//     res.status(500).json({ error: 'Internal Server Error' });
+//   }
+// });
+
+// // API to fetch task-wise data for a specific project
+// router.route('/api/taskwise/:projectName').get(async (req, res) => {
+//   const projectName = req.params.projectName;
+
+//   try {
+//     const taskWiseData = await Analyst.aggregate([
+//       { $match: { projectName: projectName } },
+//       {
+//         $group: {
+//           _id: '$task',
+//           count: { $sum: 1 },
+//         },
+//       },
+//     ]);
+
+//     res.json(taskWiseData);
+//   } catch (error) {
+//     console.error('Error fetching task-wise data:', error);
+//     res.status(500).json({ error: 'Internal Server Error' });
+//   }
+// });
+
+// Fetch distinct project names
+router.route('/projectNames').get((req, res) => {
+  Analyst.distinct('projectName')
+    .then((projectNames) => res.json(projectNames))
+    .catch((err) => res.status(400).json('Error:' + err));
+});
+
+router.route('/fetch/taskwise').get(async (req, res) => {
+  try {
+    const { sDate, eDate, projectName } = req.query;
+
+    let matchCondition = {
+      dateTask: { $gte: new Date(sDate), $lte: new Date(eDate) },
+    };
+
+    if (projectName) {
+      matchCondition.projectName = projectName;
+    }
+
+    const result = await Analyst.aggregate([
+      {
+        $match: matchCondition,
+      },
+      {
+        $group: {
+          _id: {
+            date: { $dateToString: { format: '%Y-%m-%d', date: '$dateTask' } },
+            task: '$task',
+          },
+          count: { $sum: 1 },
+        },
+      },
+    ]);
+
+    res.json(result);
+  } catch (error) {
+    console.error('Error fetching taskwise data:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+});
+
+
+  
+  
+
+
 router.route('/add').post((req,res)=>{
     const name = req.body
     const newData = new Analyst(name)
