@@ -223,7 +223,11 @@ useEffect(() => {
             setSnackbarMessage('Data saved to MongoDB');
 
             // Fetch the data from MongoDB
+<<<<<<< HEAD
             const fetchDataResponse = await fetch(`${apiUrl}/fetchData`);
+=======
+            const fetchDataResponse = await fetch('https://pblcs5okhkahpnmrbcmzwdpove0qepho.lambda-url.us-east-1.on.aws/fetchData');
+>>>>>>> df4fa8ca7a229a055effc38fe2287e99ff4e361f
             const fetchData = await fetchDataResponse.json();
 
             setColumns(fetchData.columns.map((col) => ({ field: col, headerName: col, width: 150 })));

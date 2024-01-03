@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import React, { useState, useEffect } from 'react';
 import { Routes, Route, Navigate } from "react-router-dom";
 import { ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
@@ -41,6 +41,7 @@ import AllReport from "./layouts/IdleReport"
 import ProjectEdit from "layouts/ProjectEditAdmin"
 import 'layouts/Attendance/calendar.css';
 import { from } from "stylis";
+import axios from 'axios';
 
 function App() {
   const [controller] = useMaterialUIController();
@@ -56,31 +57,74 @@ function App() {
   } = controller;
   const isLoggedIn = useSelector((state) => state.auth.isAuthenticated);
   const role = useSelector(state=>state.auth.user.role);
-  // console.log(role);
-  useEffect(() => {
-    if (localStorage.jwtToken) {
-      // Set auth token header auth
-      const token = localStorage.jwtToken;
-      setAuthToken(token);
-      // Decode token and get user info and exp
-      const decoded = jwt_decode(token);
-      // Set user and isAuthenticated
-      store.dispatch(setCurrentUser(decoded));
-      // Check for expired token
-      const currentTime = Date.now() / 1000; // to get in milliseconds
-      if (decoded.exp < currentTime) {
-        // Logout user
-        store.dispatch(logoutUser());
 
-        // Redirect to login
-        // window.location.href = "/sign-in";
-        window.location.href = "/authentication/sign-in"
-      }
+
+
+
+
+  // console.log(role);
+  // useEffect(() => {
+  //   const refreshToken = async () => {
+  //     try {
+  //       const response = await axios.get("/refresh", {
+  //         withCredentials: true,
+  //       });
+  //       localStorage.setItem("jwtToken", response.data.accessToken);
+  //       setAuthToken(response.data.accessToken);
+  //       const decoded = jwt_decode(response.data.accessToken);
+  //       store.dispatch(setCurrentUser(decoded));
+  //     } catch (err) {
+  //       if (err.response.status === 401) {
+  //         store.dispatch(logoutUser());
+  //         window.location.href = "/authentication/sign-in";
+  //       }
+  //     }
+  //   };
+
+  //   const token = localStorage.jwtToken;
+
+  //   if (!token) {
+  //     window.location.href = "/authentication/sign-in";
+  //     return;
+  //   }
+
+  //   setInterval(refreshToken, 3600000); // refresh token every hour
+
+  //   try {
+  //     setAuthToken(token);
+  //     const decoded = jwt_decode(token);
+  //     store.dispatch(setCurrentUser(decoded));
+
+  //     const currentTime = Date.now() /  3600000;
+  //     if (decoded.exp < currentTime) {
+  //       refreshToken();
+  //     }
+  //   } catch (err) {
+  //     store.dispatch(logoutUser());
+  //     window.location.href = "/authentication/sign-in";
+  //   }
+  // }, []);
+
+  const [tasks, setTasks] = useState([]);
+  const fetchData = async () => {
+    try {
+      const response = await axios.get('https://pblcs5okhkahpnmrbcmzwdpove0qepho.lambda-url.us-east-1.on.aws', {
+        withCredentials: true,
+      });
+      setTasks(response.data.data);
+    } catch (error) {
+      console.error('Error fetching data:', error);
     }
+  };
+  
+
+    // Call the fetchData function
+  useEffect(() => {
+    fetchData();
   }, []);
 
-  const getRoutes = (allRoutes) =>
-    allRoutes.map((route) => {
+const getRoutes = (allRoutes) => {
+    return allRoutes.map((route) => {
       if (route.collapse) {
         return getRoutes(route.collapse);
       }
@@ -90,13 +134,19 @@ function App() {
             key={route.route}
             exact
             path={route.route}
-            element={<Protected isValid={(isLoggedIn&&role==='admin')}>{route.component}</Protected>}
+            element={
+              <Protected isValid={isLoggedIn && role === "admin"}>
+                {route.component}
+              </Protected>
+            }
           />
         );
       }
 
       return null;
     });
+  };
+
 
   return (
     <ThemeProvider theme={darkMode ? themeDark : theme}>
